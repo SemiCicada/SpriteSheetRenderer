@@ -3,18 +3,17 @@ using Unity.Transforms;
 using Unity.Burst;
 using Unity.Jobs;
 using Unity.Collections;
+using Unity.Mathematics;
 
 public class SpriteSheetPositionSystem : JobComponentSystem {
-  [BurstCompile]
-  struct SpriteSheetPositionJob : IJobForEach<Position2D, SpriteMatrix> {
-    public void Execute([ReadOnly][ChangedFilter]ref Position2D translation, ref SpriteMatrix renderData) {
-      renderData.matrix.x = translation.Value.x;
-      renderData.matrix.y = translation.Value.y;
-    }
-  }
-
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
-    var job = new SpriteSheetPositionJob() { };
-    return job.Schedule(this, inputDeps);
+    var jobHandle = Entities
+      .WithChangeFilter<Position2D>()
+      .ForEach((ref SpriteMatrix renderData, in Position2D translation) =>{
+        renderData.matrix.x = translation.Value.x;
+        renderData.matrix.y = translation.Value.y;
+      }).Schedule(inputDeps);
+      
+    return jobHandle;
   }
 }
