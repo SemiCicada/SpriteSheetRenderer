@@ -12,8 +12,6 @@ public static class SpriteSheetCache {
     Texture texture = sprites[0].texture;
     material.mainTexture = texture;
     if(sprites.Length == 1) {
-      materialNameMaterial.Add(materialName, new KeyValuePair<Material, int>(material, sprites.Length));
-      materialToName.Add(material, materialName);
       float w = texture.width;
       float h = texture.height;
       float4[] uvs = new float4[sprites.Length];
